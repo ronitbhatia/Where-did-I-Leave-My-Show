@@ -1,0 +1,40 @@
+Where’d I Leave My Show — Privacy Policy
+
+Last updated: 2025-03-23
+
+Summary
+Where’d I Leave My Show stores your watch list (titles, season, episode, timestamps, optional notes, and links) only on your device using Chrome’s built-in storage (chrome.storage.local). This extension does not send that data to our servers, because we do not operate servers for this extension.
+
+What the extension does
+• Saves and displays the information you enter or capture while using the extension.
+• When you use “Fill from this page” or “Now,” it reads the active tab’s page title, URL, and basic information from the video element on that page so it can suggest a title, link, and playback time.
+• If you use Export backup, a JSON file is saved through your browser’s download flow. That file stays on your computer unless you choose to share it.
+
+Permissions (why they exist)
+• storage — Saves your entries locally in Chrome.
+• activeTab — Only accesses the tab that is active when you open the extension or use its actions (not your full browsing history).
+• scripting — Injects a small script into that same active tab only when you use the features above, so the extension can read title, URL, and video timing without broad website access.
+
+What we do not do
+• We do not sell your data.
+• We do not use analytics or advertising trackers in this extension.
+• We do not collect your browsing history beyond what you trigger through the extension on the active tab.
+
+Data retention and your control
+Data remains on your device until you remove it in the extension, clear extension data in Chrome, or uninstall the extension.
+
+Backups
+If you use Export backup, a JSON file is saved to your computer through your browser’s download flow. That file is under your control.
+
+Children’s privacy
+The extension is not directed at children under 13.
+
+Contact
+For privacy questions, use the contact options on this project’s GitHub repository or the Chrome Web Store listing (when available).
+
+Hosted policy (Chrome Web Store)
+https://ronitbhatia.github.io/Where-did-I-Leave-My-Show/privacy-policy.html
+(Enable GitHub Pages from the /docs folder on the main branch.)
+
+Changes
+We may update this policy if the extension’s behavior changes. The “Last updated” date will change when it does.

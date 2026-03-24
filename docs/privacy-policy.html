@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Policy — Where’d I Leave My Show</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #1c1917;
+        --bg: #fafaf9;
+        --muted: #57534e;
+        --link: #4f46e5;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #fafaf9;
+          --bg: #1c1917;
+          --muted: #a8a29e;
+          --link: #a5b4fc;
+        }
+      }
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+        color: var(--fg);
+        background: var(--bg);
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.25;
+        margin: 0 0 0.25rem;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 0 0 1.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin: 1.75rem 0 0.5rem;
+      }
+      p,
+      ul {
+        margin: 0.5rem 0;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+      a {
+        color: var(--link);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Privacy Policy</h1>
+      <p class="meta"><strong>Where’d I Leave My Show</strong> · Last updated: March 23, 2025</p>
+    </header>
+
+    <p>
+      This page describes how the <strong>Where’d I Leave My Show</strong> browser extension (“the extension”) handles information.
+      The extension is designed to work <strong>locally on your device</strong>.
+    </p>
+
+    <h2>Summary</h2>
+    <p>
+      The extension stores your watch list (for example: show title, season, episode, timestamps, optional notes, and links)
+      <strong>only on your device</strong> using Chrome’s built-in storage (<code>chrome.storage.local</code>).
+      We do not operate backend servers for this extension, and the extension does not send your watch list to us.
+    </p>
+
+    <h2>What the extension does</h2>
+    <ul>
+      <li>Saves and displays the information you enter while using the extension.</li>
+      <li>
+        When you use <strong>Fill from this page</strong> or <strong>Now</strong>, the extension reads the active tab’s page title,
+        URL, and basic information from the video element on that page (when available) to suggest a title, link, and playback time.
+      </li>
+      <li>
+        If you use <strong>Export backup</strong>, a JSON file is saved through your browser’s normal download flow. That file stays on your computer unless you choose to share it.
+      </li>
+    </ul>
+
+    <h2>Permissions (why they exist)</h2>
+    <ul>
+      <li><strong>storage</strong> — To save your entries in Chrome on your device.</li>
+      <li>
+        <strong>activeTab</strong> — To access only the tab that is active when you open the extension or use its actions,
+        so it can read the page title, URL, and (when possible) video timing. This is not ongoing access to your browsing history.
+      </li>
+      <li>
+        <strong>scripting</strong> — To inject a small script into that same active tab only when you use the features above,
+        so the extension can read title, URL, and video timing without requesting broad access to every website.
+      </li>
+    </ul>
+
+    <h2>What we do not do</h2>
+    <ul>
+      <li>We do not sell your data.</li>
+      <li>We do not use analytics or advertising trackers in this extension.</li>
+      <li>We do not collect your full browsing history.</li>
+    </ul>
+
+    <h2>Data retention and your control</h2>
+    <p>
+      Data remains on your device until you remove it in the extension, clear extension data in Chrome, or uninstall the extension.
+      You can delete individual entries, use import/export to manage your own backups, and uninstall at any time.
+    </p>
+
+    <h2>Children’s privacy</h2>
+    <p>
+      The extension is not directed at children under 13, and we do not knowingly collect personal information from children.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      We may update this policy if the extension’s behavior changes. The “Last updated” date will change when it does.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      For privacy questions, please use the contact options listed on the extension’s
+      <a href="https://github.com/ronitbhatia/Where-did-I-Leave-My-Show">GitHub repository</a>
+      or the Chrome Web Store listing (when available).
+    </p>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Where'd I Leave My Show",
+  "version": "1.2.0",
+  "description": "Remember series, season, episode, and timestamp—so you can find your show again. Data stays on your device.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Where'd I Leave My Show"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Open Where'd I Leave My Show"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

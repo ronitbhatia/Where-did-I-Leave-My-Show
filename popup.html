@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Where'd I Leave My Show</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <p class="toast" role="status" id="status" aria-live="polite" hidden></p>
+    <header class="top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1 class="app-title">Where'd I Leave My Show</h1>
+          <p class="tagline">Season · episode · time · <kbd class="kbd-hint" id="kbdHint" title="Open this popup">…</kbd></p>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel capture" aria-label="Capture from this tab">
+      <button type="button" class="btn primary" id="btnCapture">Fill from this page</button>
+      <p class="hint" id="captureHint">Uses tab title, URL, and the largest video on the page.</p>
+    </section>
+
+    <form class="panel form" id="form" autocomplete="off">
+      <p class="editing-banner" id="editingBanner" hidden>Editing saved entry — save to update.</p>
+      <label class="field">
+        <span>Series</span>
+        <input type="text" id="title" name="title" placeholder="Show name" required />
+      </label>
+      <div class="row">
+        <label class="field small">
+          <span>Season</span>
+          <input type="number" id="season" name="season" min="0" step="1" placeholder="—" />
+        </label>
+        <label class="field small">
+          <span>Episode</span>
+          <input type="number" id="episode" name="episode" min="0" step="1" placeholder="—" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Timestamp</span>
+        <div class="ts-row">
+          <input type="text" id="timestamp" name="timestamp" placeholder="e.g. 12:04 or 1:02:10" inputmode="numeric" />
+          <button type="button" class="btn ghost" id="btnNow" title="Use time from video on this page">Now</button>
+        </div>
+      </label>
+      <label class="field">
+        <span>Notes <span class="optional">optional</span></span>
+        <input type="text" id="notes" name="notes" placeholder="e.g. cliffhanger ending" />
+      </label>
+      <label class="field">
+        <span>Link <span class="optional">optional</span></span>
+        <input type="url" id="url" name="url" placeholder="Page URL" />
+      </label>
+      <div class="actions">
+        <button type="submit" class="btn primary" id="btnSave">Save</button>
+        <button type="button" class="btn ghost" id="btnClear">Clear form</button>
+      </div>
+      <p class="privacy-note">Data is stored only in Chrome on this device.</p>
+      <input type="hidden" id="editId" value="" />
+    </form>
+
+    <section class="panel list-wrap" aria-label="Saved shows">
+      <div class="list-head">
+        <h2>Saved</h2>
+        <span class="badge" id="count">0</span>
+      </div>
+      <ul class="list" id="list"></ul>
+      <p class="empty" id="empty">Nothing saved yet. Open a show, click “Fill from this page”, then Save.</p>
+      <div class="backup-row">
+        <button type="button" class="btn ghost small" id="btnExport">Export backup</button>
+        <button type="button" class="btn ghost small" id="btnImport">Import backup</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden />
+      </div>
+    </section>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
