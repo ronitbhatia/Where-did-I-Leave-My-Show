@@ -34,7 +34,7 @@ For privacy questions, use the contact options on this project’s GitHub reposi
 
 Hosted policy (Chrome Web Store)
 https://ronitbhatia.github.io/Where-did-I-Leave-My-Show/privacy-policy.html
-(Enable GitHub Pages from the /docs folder on the main branch.)
+(Enable GitHub Pages: branch main, folder / (root). File: privacy-policy.html at repo root.)
 
 Changes
 We may update this policy if the extension’s behavior changes. The “Last updated” date will change when it does.

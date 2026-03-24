@@ -26,7 +26,7 @@ After you enable **GitHub Pages** (branch `main`, folder `/docs`), use:
 
 **https://ronitbhatia.github.io/Where-did-I-Leave-My-Show/privacy-policy.html**
 
-Source file in this repo: [`docs/privacy-policy.html`](docs/privacy-policy.html).
+Source file in this repo: [`privacy-policy.html`](privacy-policy.html) at the **repository root** (GitHub Pages must use branch **main** and folder **/ (root)**).
 
 Paste that **https** URL into the Chrome Web Store **Privacy policy** field. Plain text: [`privacy-policy.txt`](privacy-policy.txt).
 

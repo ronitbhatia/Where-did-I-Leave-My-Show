@@ -4,19 +4,23 @@ Chrome extension to remember **series, season, episode, and timestamp** across s
 
 ## Privacy policy (Chrome Web Store)
 
-**Hosted policy URL (use after enabling GitHub Pages — see below):**
+**Hosted policy URL (after GitHub Pages is enabled — see below):**
 
 https://ronitbhatia.github.io/Where-did-I-Leave-My-Show/privacy-policy.html
 
-- Source: [`docs/privacy-policy.html`](docs/privacy-policy.html)
+- Source: [`privacy-policy.html`](privacy-policy.html) (repository **root**, not `/docs`)
 - Plain text copy: [`privacy-policy.txt`](privacy-policy.txt)
 
 ### Enable GitHub Pages (one-time)
 
 1. Repo → **Settings** → **Pages**
 2. **Build and deployment** → Source: **Deploy from a branch**
-3. Branch: **main** · Folder: **/docs** → Save
-4. Wait a minute, then open the policy URL above and paste it into the Chrome Web Store **Privacy policy** field.
+3. Branch: **main** · Folder: **/ (root)** → **Save**  
+   (Must be **root**, because `privacy-policy.html` lives next to `manifest.json`.)
+4. Wait 1–2 minutes for the first deploy, then open the policy URL above.  
+   Root URL `https://ronitbhatia.github.io/Where-did-I-Leave-My-Show/` redirects to the policy via [`index.html`](index.html).
+
+If you still see **404**, confirm Pages shows “Your site is live at …” and that you did not select **/docs** unless you move the HTML back into `docs/`.
 
 ## Install (developer / unpacked)
 
