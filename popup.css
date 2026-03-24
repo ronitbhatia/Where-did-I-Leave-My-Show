@@ -352,3 +352,21 @@ input:focus {
 .empty[hidden] {
   display: none;
 }
+
+.popup-footer {
+  margin: 0 12px 14px;
+  padding-top: 4px;
+  text-align: center;
+}
+
+.popup-footer a {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.popup-footer a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
