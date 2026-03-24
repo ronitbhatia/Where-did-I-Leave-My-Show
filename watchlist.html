@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Watchlist — Where’d I Leave My Show</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="watchlist.css" />
+  </head>
+  <body class="page-watchlist">
+    <header class="wl-page-head">
+      <div class="wl-page-brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1 class="wl-page-title">Your watchlist</h1>
+          <p class="wl-page-sub">Saved on this device · use the toolbar icon to capture from the current tab</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="wl-page-main">
+      <div class="panel tools">
+        <label class="sr-only" for="wlSearch">Search watchlist</label>
+        <input type="search" id="wlSearch" class="search-input" placeholder="Search shows…" autocomplete="off" />
+        <div class="chips" id="wlChips" role="group" aria-label="Filter by status">
+          <button type="button" class="chip active" data-filter="all">All</button>
+          <button type="button" class="chip" data-filter="queue">Up next</button>
+          <button type="button" class="chip" data-filter="watching">Watching</button>
+          <button type="button" class="chip" data-filter="done">Done</button>
+        </div>
+        <div class="quick-add">
+          <label class="sr-only" for="quickTitle">Show title</label>
+          <input type="text" id="quickTitle" placeholder="Add a show to your list…" autocomplete="off" />
+          <button type="button" class="btn primary small" id="quickAdd">Add</button>
+        </div>
+      </div>
+
+      <section class="panel list-wrap" aria-label="Watchlist">
+        <div class="list-head">
+          <h2>All shows</h2>
+          <span class="badge" id="count">0</span>
+        </div>
+        <ul class="list" id="list"></ul>
+        <p class="empty" id="empty">Nothing here yet. Add a show above, or use the extension popup on a streaming tab.</p>
+        <div class="backup-row">
+          <button type="button" class="btn ghost small" id="btnExport">Export backup</button>
+          <button type="button" class="btn ghost small" id="btnImport">Import backup</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden />
+        </div>
+      </section>
+    </main>
+
+    <footer class="wl-page-foot">
+      <a
+        href="https://ronitbhatia.github.io/Where-did-I-Leave-My-Show/privacy-policy.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Privacy policy</a>
+    </footer>
+
+    <script src="wl-shared.js"></script>
+    <script src="watchlist.js"></script>
+  </body>
+</html>

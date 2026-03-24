@@ -6,75 +6,113 @@
     <title>Where'd I Leave My Show</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
-  <body>
+  <body class="is-popup">
     <p class="toast" role="status" id="status" aria-live="polite" hidden></p>
     <header class="top">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"></span>
         <div>
           <h1 class="app-title">Where'd I Leave My Show</h1>
-          <p class="tagline">Season · episode · time · <kbd class="kbd-hint" id="kbdHint" title="Open this popup">…</kbd></p>
+          <p class="tagline">Watchlist · this tab · <kbd class="kbd-hint" id="kbdHint" title="Open this popup">…</kbd></p>
         </div>
       </div>
     </header>
 
-    <section class="panel capture" aria-label="Capture from this tab">
-      <button type="button" class="btn primary" id="btnCapture">Fill from this page</button>
-      <p class="hint" id="captureHint">Uses tab title, URL, and the largest video on the page.</p>
-    </section>
+    <nav class="tab-bar" role="tablist" aria-label="Main">
+      <button type="button" class="tab-btn" role="tab" id="tabWatchlist" aria-selected="true" aria-controls="panelWatchlist">
+        Watchlist
+      </button>
+      <button type="button" class="tab-btn" role="tab" id="tabCapture" aria-selected="false" aria-controls="panelCapture">
+        This tab
+      </button>
+    </nav>
 
-    <form class="panel form" id="form" autocomplete="off">
-      <p class="editing-banner" id="editingBanner" hidden>Editing saved entry — save to update.</p>
-      <label class="field">
-        <span>Series</span>
-        <input type="text" id="title" name="title" placeholder="Show name" required />
-      </label>
-      <div class="row">
-        <label class="field small">
-          <span>Season</span>
-          <input type="number" id="season" name="season" min="0" step="1" placeholder="—" />
-        </label>
-        <label class="field small">
-          <span>Episode</span>
-          <input type="number" id="episode" name="episode" min="0" step="1" placeholder="—" />
-        </label>
-      </div>
-      <label class="field">
-        <span>Timestamp</span>
-        <div class="ts-row">
-          <input type="text" id="timestamp" name="timestamp" placeholder="e.g. 12:04 or 1:02:10" inputmode="numeric" />
-          <button type="button" class="btn ghost" id="btnNow" title="Use time from video on this page">Now</button>
+    <div id="panelWatchlist" class="tab-panel" role="tabpanel" aria-labelledby="tabWatchlist">
+      <div class="panel tools">
+        <label class="sr-only" for="wlSearch">Search watchlist</label>
+        <input type="search" id="wlSearch" class="search-input" placeholder="Search shows…" autocomplete="off" />
+        <div class="chips" id="wlChips" role="group" aria-label="Filter by status">
+          <button type="button" class="chip active" data-filter="all">All</button>
+          <button type="button" class="chip" data-filter="queue">Up next</button>
+          <button type="button" class="chip" data-filter="watching">Watching</button>
+          <button type="button" class="chip" data-filter="done">Done</button>
         </div>
-      </label>
-      <label class="field">
-        <span>Notes <span class="optional">optional</span></span>
-        <input type="text" id="notes" name="notes" placeholder="e.g. cliffhanger ending" />
-      </label>
-      <label class="field">
-        <span>Link <span class="optional">optional</span></span>
-        <input type="url" id="url" name="url" placeholder="Page URL" />
-      </label>
-      <div class="actions">
-        <button type="submit" class="btn primary" id="btnSave">Save</button>
-        <button type="button" class="btn ghost" id="btnClear">Clear form</button>
+        <div class="quick-add">
+          <label class="sr-only" for="quickTitle">Show title</label>
+          <input type="text" id="quickTitle" placeholder="Add a show to your list…" autocomplete="off" />
+          <button type="button" class="btn primary small" id="quickAdd">Add</button>
+        </div>
       </div>
-      <p class="privacy-note">Data is stored only in Chrome on this device.</p>
-      <input type="hidden" id="editId" value="" />
-    </form>
 
-    <section class="panel list-wrap" aria-label="Saved shows">
-      <div class="list-head">
-        <h2>Saved</h2>
-        <span class="badge" id="count">0</span>
-      </div>
-      <ul class="list" id="list"></ul>
-      <p class="empty" id="empty">Nothing saved yet. Open a show, click “Fill from this page”, then Save.</p>
-      <div class="backup-row">
-        <button type="button" class="btn ghost small" id="btnExport">Export backup</button>
-        <button type="button" class="btn ghost small" id="btnImport">Import backup</button>
-        <input type="file" id="importFile" accept="application/json,.json" hidden />
-      </div>
-    </section>
+      <section class="panel list-wrap" aria-label="Watchlist">
+        <div class="list-head">
+          <h2>Your list</h2>
+          <span class="badge" id="count">0</span>
+        </div>
+        <ul class="list" id="list"></ul>
+        <p class="empty" id="empty">Nothing here yet. Add a show above, or use “This tab” to capture from the player.</p>
+        <div class="backup-row">
+          <button type="button" class="btn ghost small" id="btnExport">Export backup</button>
+          <button type="button" class="btn ghost small" id="btnImport">Import backup</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden />
+        </div>
+        <button type="button" class="btn ghost full-width" id="openFullPage">Open full watchlist in a tab</button>
+      </section>
+    </div>
+
+    <div id="panelCapture" class="tab-panel" role="tabpanel" aria-labelledby="tabCapture" hidden>
+      <section class="panel capture" aria-label="Capture from this tab">
+        <button type="button" class="btn primary" id="btnCapture">Fill from this page</button>
+        <p class="hint" id="captureHint">Uses tab title, URL, and the largest video on the page.</p>
+      </section>
+
+      <form class="panel form" id="form" autocomplete="off">
+        <p class="editing-banner" id="editingBanner" hidden>Editing saved entry — save to update.</p>
+        <label class="field">
+          <span>Series</span>
+          <input type="text" id="title" name="title" placeholder="Show name" required />
+        </label>
+        <label class="field">
+          <span>List</span>
+          <select id="watchStatus" name="watchStatus">
+            <option value="queue">Up next</option>
+            <option value="watching" selected>Watching</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+        <div class="row">
+          <label class="field small">
+            <span>Season</span>
+            <input type="number" id="season" name="season" min="0" step="1" placeholder="—" />
+          </label>
+          <label class="field small">
+            <span>Episode</span>
+            <input type="number" id="episode" name="episode" min="0" step="1" placeholder="—" />
+          </label>
+        </div>
+        <label class="field">
+          <span>Timestamp</span>
+          <div class="ts-row">
+            <input type="text" id="timestamp" name="timestamp" placeholder="e.g. 12:04 or 1:02:10" inputmode="numeric" />
+            <button type="button" class="btn ghost" id="btnNow" title="Use time from video on this page">Now</button>
+          </div>
+        </label>
+        <label class="field">
+          <span>Notes <span class="optional">optional</span></span>
+          <input type="text" id="notes" name="notes" placeholder="e.g. cliffhanger ending" />
+        </label>
+        <label class="field">
+          <span>Link <span class="optional">optional</span></span>
+          <input type="url" id="url" name="url" placeholder="Page URL" />
+        </label>
+        <div class="actions">
+          <button type="submit" class="btn primary" id="btnSave">Save</button>
+          <button type="button" class="btn ghost" id="btnClear">Clear form</button>
+        </div>
+        <p class="privacy-note">Data is stored only in Chrome on this device.</p>
+        <input type="hidden" id="editId" value="" />
+      </form>
+    </div>
 
     <footer class="popup-footer">
       <a
@@ -84,6 +122,7 @@
         >Privacy policy</a>
     </footer>
 
+    <script src="wl-shared.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

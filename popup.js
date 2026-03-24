@@ -1,14 +1,13 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "watchlistEntries";
-  const BACKUP_VERSION = 1;
-
+  const WL = window.WL;
   const $ = (id) => document.getElementById(id);
 
   const els = {
     form: $("form"),
     title: $("title"),
+    watchStatus: $("watchStatus"),
     season: $("season"),
     episode: $("episode"),
     timestamp: $("timestamp"),
@@ -28,39 +27,22 @@
     btnExport: $("btnExport"),
     btnImport: $("btnImport"),
     importFile: $("importFile"),
-    kbdHint: $("kbdHint")
+    kbdHint: $("kbdHint"),
+    tabWatchlist: $("tabWatchlist"),
+    tabCapture: $("tabCapture"),
+    panelWatchlist: $("panelWatchlist"),
+    panelCapture: $("panelCapture"),
+    wlSearch: $("wlSearch"),
+    wlChips: $("wlChips"),
+    quickTitle: $("quickTitle"),
+    quickAdd: $("quickAdd"),
+    openFullPage: $("openFullPage")
   };
 
   const SAVE_LABEL = "Save";
 
-  function parseTimeToSeconds(str) {
-    if (str == null) return null;
-    const s = String(str).trim();
-    if (!s) return null;
-    const parts = s.split(":").map((p) => p.trim());
-    if (parts.some((p) => p === "" || Number.isNaN(Number(p)))) return null;
-    const nums = parts.map((p) => parseInt(p, 10));
-    if (nums.some((n) => n < 0 || Number.isNaN(n))) return null;
-    if (nums.length === 1) return nums[0];
-    if (nums.length === 2) return nums[0] * 60 + nums[1];
-    if (nums.length === 3) return nums[0] * 3600 + nums[1] * 60 + nums[2];
-    return null;
-  }
-
-  function formatSeconds(total) {
-    if (total == null || !Number.isFinite(total) || total < 0) return "";
-    const h = Math.floor(total / 3600);
-    const m = Math.floor((total % 3600) / 60);
-    const s = Math.floor(total % 60);
-    if (h > 0) {
-      return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-    }
-    return `${m}:${String(s).padStart(2, "0")}`;
-  }
-
-  function uid() {
-    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
-  }
+  let statusFilter = "all";
+  let searchQuery = "";
 
   function isRestrictedUrl(url) {
     if (!url) return true;
@@ -149,129 +131,127 @@
     if (ctx.url) {
       els.url.value = ctx.url;
     }
+    els.watchStatus.value = WL.WATCH_STATUS.WATCHING;
     if (ctx.hasVideo && ctx.currentTime != null) {
-      els.timestamp.value = formatSeconds(ctx.currentTime);
+      els.timestamp.value = WL.formatSeconds(ctx.currentTime);
       els.captureHint.textContent = ctx.paused ? "Video paused — time captured." : "Playing — time captured.";
     } else {
       els.captureHint.textContent = "No video found — title and link filled from the tab.";
     }
   }
 
-  async function loadEntries() {
-    const data = await chrome.storage.local.get(STORAGE_KEY);
-    return Array.isArray(data[STORAGE_KEY]) ? data[STORAGE_KEY] : [];
-  }
+  async function refreshList() {
+    const all = await WL.loadEntries();
+    els.count.textContent = String(all.length);
+    const filtered = WL.filterEntries(all, { query: searchQuery, statusFilter });
+    els.empty.hidden = filtered.length > 0;
 
-  async function saveEntries(entries) {
-    await chrome.storage.local.set({ [STORAGE_KEY]: entries });
-  }
-
-  function normalizeEntry(raw) {
-    if (!raw || typeof raw !== "object") return null;
-    const title = typeof raw.title === "string" ? raw.title.trim() : "";
-    if (!title) return null;
-    const id = typeof raw.id === "string" && raw.id ? raw.id : uid();
-    const season = raw.season != null && Number.isFinite(Number(raw.season)) ? parseInt(String(raw.season), 10) : null;
-    const episode = raw.episode != null && Number.isFinite(Number(raw.episode)) ? parseInt(String(raw.episode), 10) : null;
-    let timestampSec = null;
-    if (raw.timestampSec != null && Number.isFinite(Number(raw.timestampSec))) {
-      timestampSec = Number(raw.timestampSec);
-    }
-    const notes = typeof raw.notes === "string" && raw.notes.trim() ? raw.notes.trim() : undefined;
-    const url = typeof raw.url === "string" && raw.url.trim() ? raw.url.trim() : undefined;
-    const updatedAt =
-      typeof raw.updatedAt === "string" && raw.updatedAt ? raw.updatedAt : new Date().toISOString();
-    return { id, title, season, episode, timestampSec, notes, url, updatedAt };
-  }
-
-  function render(entries) {
-    els.list.innerHTML = "";
-    els.count.textContent = String(entries.length);
-    els.empty.hidden = entries.length > 0;
-
-    const sorted = [...entries].sort((a, b) => {
-      const ta = new Date(a.updatedAt || 0).getTime();
-      const tb = new Date(b.updatedAt || 0).getTime();
-      return tb - ta;
-    });
-
-    for (const e of sorted) {
-      const li = document.createElement("li");
-      li.className = "card";
-
-      const ts = e.timestampSec != null ? formatSeconds(e.timestampSec) : "—";
-      const se =
-        e.season != null || e.episode != null
-          ? `S${e.season != null ? e.season : "?"} E${e.episode != null ? e.episode : "?"}`
-          : "Season / episode not set";
-
-      const title = document.createElement("p");
-      title.className = "card-title";
-      title.textContent = e.title || "Untitled";
-
-      const meta = document.createElement("p");
-      meta.className = "card-meta";
-      meta.textContent = `${se} · ${ts}`;
-
-      li.appendChild(title);
-      li.appendChild(meta);
-
-      if (e.notes) {
-        const n = document.createElement("p");
-        n.className = "card-notes";
-        n.textContent = e.notes;
-        li.appendChild(n);
-      }
-
-      const actions = document.createElement("div");
-      actions.className = "card-actions";
-
-      if (e.url) {
-        const a = document.createElement("a");
-        a.href = e.url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = "Open link";
-        actions.appendChild(a);
-      }
-
-      const btnEdit = document.createElement("button");
-      btnEdit.type = "button";
-      btnEdit.className = "btn ghost icon";
-      btnEdit.textContent = "Edit";
-      btnEdit.addEventListener("click", () => {
+    WL.renderList(els.list, filtered, {
+      onEdit: (e) => {
         els.editId.value = e.id;
         setEditingUi(true);
         els.title.value = e.title || "";
+        els.watchStatus.value = e.watchStatus || WL.WATCH_STATUS.WATCHING;
         els.season.value = e.season != null ? String(e.season) : "";
         els.episode.value = e.episode != null ? String(e.episode) : "";
-        els.timestamp.value = e.timestampSec != null ? formatSeconds(e.timestampSec) : "";
+        els.timestamp.value = e.timestampSec != null ? WL.formatSeconds(e.timestampSec) : "";
         els.notes.value = e.notes || "";
         els.url.value = e.url || "";
+        setTab("capture");
         els.title.focus();
-      });
-
-      const btnDel = document.createElement("button");
-      btnDel.type = "button";
-      btnDel.className = "btn danger icon";
-      btnDel.textContent = "Delete";
-      btnDel.addEventListener("click", async () => {
-        const next = (await loadEntries()).filter((x) => x.id !== e.id);
-        await saveEntries(next);
-        render(next);
-        if (els.editId.value === e.id) {
+      },
+      onDelete: async (id) => {
+        const next = (await WL.loadEntries()).filter((x) => x.id !== id);
+        await WL.saveEntries(next);
+        await refreshList();
+        if (els.editId.value === id) {
           els.form.reset();
           els.editId.value = "";
+          els.watchStatus.value = WL.WATCH_STATUS.WATCHING;
           setEditingUi(false);
         }
-      });
+      },
+      onStatusChange: async (id, newStatus) => {
+        const entries = await WL.loadEntries();
+        const idx = entries.findIndex((x) => x.id === id);
+        if (idx < 0) return;
+        entries[idx] = {
+          ...entries[idx],
+          watchStatus: newStatus,
+          updatedAt: new Date().toISOString()
+        };
+        await WL.saveEntries(entries);
+        await refreshList();
+        showStatus("Updated.");
+      }
+    });
+  }
 
-      actions.appendChild(btnEdit);
-      actions.appendChild(btnDel);
-      li.appendChild(actions);
-      els.list.appendChild(li);
+  function setTab(which) {
+    const watch = which === "watchlist";
+    els.tabWatchlist.setAttribute("aria-selected", watch ? "true" : "false");
+    els.tabCapture.setAttribute("aria-selected", watch ? "false" : "true");
+    els.panelWatchlist.hidden = !watch;
+    els.panelCapture.hidden = watch;
+    try {
+      sessionStorage.setItem("wlPopupTab", which);
+    } catch {
+      /* ignore */
     }
   }
+
+  els.tabWatchlist.addEventListener("click", () => setTab("watchlist"));
+  els.tabCapture.addEventListener("click", () => setTab("capture"));
+
+  els.wlSearch.addEventListener("input", () => {
+    searchQuery = els.wlSearch.value;
+    refreshList();
+  });
+
+  els.wlChips.addEventListener("click", (ev) => {
+    const btn = ev.target.closest(".chip");
+    if (!btn || !els.wlChips.contains(btn)) return;
+    const f = btn.getAttribute("data-filter");
+    if (!f) return;
+    statusFilter = f;
+    els.wlChips.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === btn));
+    refreshList();
+  });
+
+  els.quickAdd.addEventListener("click", async () => {
+    const t = els.quickTitle.value.trim();
+    if (!t) {
+      els.quickTitle.focus();
+      return;
+    }
+    const entries = await WL.loadEntries();
+    entries.push({
+      id: WL.uid(),
+      title: t,
+      season: null,
+      episode: null,
+      timestampSec: null,
+      notes: undefined,
+      url: undefined,
+      updatedAt: new Date().toISOString(),
+      watchStatus: WL.WATCH_STATUS.QUEUE
+    });
+    await WL.saveEntries(entries);
+    els.quickTitle.value = "";
+    await refreshList();
+    showStatus("Added to Up next.");
+  });
+
+  els.quickTitle.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      els.quickAdd.click();
+    }
+  });
+
+  els.openFullPage.addEventListener("click", () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL("watchlist.html") });
+  });
 
   els.btnCapture.addEventListener("click", async () => {
     const ctx = await getPageContext();
@@ -281,20 +261,21 @@
   els.btnNow.addEventListener("click", async () => {
     const ctx = await getPageContext();
     if (ctx && !ctx.restricted && !ctx.error && ctx.hasVideo && ctx.currentTime != null) {
-      els.timestamp.value = formatSeconds(ctx.currentTime);
+      els.timestamp.value = WL.formatSeconds(ctx.currentTime);
     }
   });
 
   els.btnClear.addEventListener("click", () => {
     els.form.reset();
     els.editId.value = "";
+    els.watchStatus.value = WL.WATCH_STATUS.WATCHING;
     setEditingUi(false);
   });
 
   els.btnExport.addEventListener("click", async () => {
-    const entries = await loadEntries();
+    const entries = await WL.loadEntries();
     const payload = {
-      watchlistBackupVersion: BACKUP_VERSION,
+      watchlistBackupVersion: WL.BACKUP_VERSION,
       exportedAt: new Date().toISOString(),
       entries
     };
@@ -330,11 +311,11 @@
       if (!ok) return;
       const next = [];
       for (const item of rawList) {
-        const n = normalizeEntry(item);
+        const n = WL.normalizeEntry(item);
         if (n) next.push(n);
       }
-      await saveEntries(next);
-      render(next);
+      await WL.saveEntries(next);
+      await refreshList();
       showStatus(`Imported ${next.length} show(s).`);
     } catch {
       showStatus("Could not read that file.");
@@ -351,11 +332,12 @@
     const season = seasonRaw === "" ? null : parseInt(seasonRaw, 10);
     const episode = episodeRaw === "" ? null : parseInt(episodeRaw, 10);
 
-    const tsSec = parseTimeToSeconds(els.timestamp.value);
+    const tsSec = WL.parseTimeToSeconds(els.timestamp.value);
     const notes = els.notes.value.trim();
     const url = els.url.value.trim();
+    const watchStatus = els.watchStatus.value || WL.WATCH_STATUS.WATCHING;
 
-    const entries = await loadEntries();
+    const entries = await WL.loadEntries();
     const editId = els.editId.value;
     const now = new Date().toISOString();
 
@@ -365,6 +347,7 @@
         entries[idx] = {
           ...entries[idx],
           title,
+          watchStatus,
           season: Number.isFinite(season) ? season : null,
           episode: Number.isFinite(episode) ? episode : null,
           timestampSec: tsSec,
@@ -375,8 +358,9 @@
       }
     } else {
       entries.push({
-        id: uid(),
+        id: WL.uid(),
         title,
+        watchStatus,
         season: Number.isFinite(season) ? season : null,
         episode: Number.isFinite(episode) ? episode : null,
         timestampSec: tsSec,
@@ -386,13 +370,15 @@
       });
     }
 
-    await saveEntries(entries);
+    await WL.saveEntries(entries);
     els.form.reset();
     els.editId.value = "";
+    els.watchStatus.value = WL.WATCH_STATUS.WATCHING;
     setEditingUi(false);
-    render(entries);
+    await refreshList();
     flashSaved();
     showStatus("Saved to this device.");
+    setTab("watchlist");
   });
 
   (function setShortcutLabel() {
@@ -401,7 +387,17 @@
     if (els.kbdHint) els.kbdHint.textContent = mac ? "⌘⇧Y" : "Ctrl+Shift+Y";
   })();
 
-  loadEntries().then(render);
+  (function initTab() {
+    let t = "watchlist";
+    try {
+      t = sessionStorage.getItem("wlPopupTab") || "watchlist";
+    } catch {
+      /* ignore */
+    }
+    setTab(t === "capture" ? "capture" : "watchlist");
+  })();
+
+  refreshList();
 
   getPageContext().then((ctx) => {
     if (ctx && !ctx.restricted && !ctx.error && ctx.pageTitle) {

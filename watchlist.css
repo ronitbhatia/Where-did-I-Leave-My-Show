@@ -1,0 +1,73 @@
+body.page-watchlist {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+}
+
+.page-watchlist {
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.wl-page-head {
+  padding: 1.5rem 1.25rem 0.5rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.wl-page-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.wl-page-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.wl-page-sub {
+  margin: 0.35rem 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+  max-width: 36rem;
+}
+
+.wl-page-main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+.wl-page-foot {
+  max-width: 40rem;
+  margin: 1.25rem auto 0;
+  padding: 0 12px;
+  text-align: center;
+}
+
+.wl-page-foot a {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.wl-page-foot a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.toast-page {
+  margin: 12px 12px 0;
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toast-page[hidden] {
+  display: none;
+}
