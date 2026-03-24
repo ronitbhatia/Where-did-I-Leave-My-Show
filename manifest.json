@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Where'd I Leave My Show",
-  "version": "1.3.0",
-  "description": "Watchlist with search & status (Up next, Watching, Done), capture from the current tab, and optional full-page list. Data stays on your device.",
+  "version": "1.3.1",
+  "description": "Watchlist with search and status tags. Capture from this tab or open full list. Data stays on your device.",
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
