@@ -1,6 +1,33 @@
 # Where’d I Leave My Show
 
-Chrome extension to remember **series, season, episode, and timestamp** across streaming sites—minimal UI, data stays **on your device**.
+Chrome extension to remember **series, season, episode, and timestamp** across streaming sites—watchlist, search, and statuses—minimal UI, data stays **on your device**.
+
+## Chrome Web Store description (copy / paste)
+
+Use the text below for the **detailed description** field in the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole).
+
+---
+
+**Where’d I Leave My Show** is a small Chrome extension for anyone who jumps between Netflix, Prime Video, and other sites and loses track of **which episode** they were on—or **how far** they got.
+
+**What it does**
+
+- **Watchlist** — Keep every show in one place. **Search** your list and filter by **All**, **Up next**, **Watching**, or **Done**.
+- **Quick add** — Type a title and add it to **Up next** in one step (no video tab required).
+- **Per-show status** — Mark each title as **Up next**, **Watching**, or **Done** from the list (or set it when you save).
+- **This tab** — **Fill from this page** pulls the tab title, URL, and (when possible) the current time from the video on the page. Tweak season, episode, timestamp, notes, and link, then save.
+- **Full watchlist** — Open your list in a **full browser tab** for more space; it stays in sync with the popup.
+- **Export / import** — Download or restore a backup **JSON** file—your data, your copy.
+
+**Privacy**
+
+Your list is stored **only in Chrome on your device** (local storage). We don’t run a backend for this extension.
+
+**Open source**
+
+Code and updates: [github.com/ronitbhatia/Where-did-I-Leave-My-Show](https://github.com/ronitbhatia/Where-did-I-Leave-My-Show)
+
+---
 
 ## Privacy policy (Chrome Web Store)
 
